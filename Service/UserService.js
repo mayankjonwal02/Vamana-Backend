@@ -23,7 +23,7 @@ const createUser = async (req, res) => {
 
 const signinUser = async (req, res) => {
     try {
-      const { userID, password } = req.body;
+      const { userID, password ,role } = req.body;
   
       // Find user by userID
       const user = await User.findOne({ userID });
@@ -34,7 +34,8 @@ const signinUser = async (req, res) => {
   
       // Compare password
       const isMatch = (password === user.password);
-      if (isMatch) {
+      const roleMatch = (role === user.role);
+      if (isMatch && roleMatch) {
         res.status(200).json({ message: 'Sign-in successful' , executed : true});
       } else {
         res.status(401).json({ message: 'Invalid credentials' , executed : false});
