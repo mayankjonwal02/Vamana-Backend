@@ -23,6 +23,10 @@ app.use('/api/user', UserRouter)
 app.use('/api/patient', PatientRouter)
 app.use('/api/questions', QuestionRouter)
 
+app.get("/api/test", (req, res) => {
+    res.json({message : "Connection Successful" , executed : true});
+})
+
 app.listen(port, () => {
   console.log(`Example app listening on port ${port}`)
 })
