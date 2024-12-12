@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const {
   createCategory,
+  getAllQuestions,
   createQuestionByCategoryUID,
   getQuestionsByCategoryUID,
   updateCategoryByUID,
@@ -14,6 +15,9 @@ const {
 
 // Create a new category
 router.post('/categories', createCategory);
+
+// Get all questions
+router.get('/questions', getAllQuestions);
 
 // Add a question to a category by category UID
 router.post('/categories/:categoryUID/questions', createQuestionByCategoryUID);
