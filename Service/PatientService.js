@@ -5,6 +5,10 @@ const createPatient = async (req, res) => {
   try {
     const { name, uhid, age, occupation, past_illness, address, medicine_history, date_of_admission, date_of_vamana, prakriti } = req.body;
 
+    const existingPatient = await Patient.findOne({ uhid });
+    if (existingPatient) {
+      return res.status(200).json({ message: 'UHID already exists', executed: false });
+    }
     const newPatient = new Patient({
       name,
       uhid,
@@ -17,13 +21,19 @@ const createPatient = async (req, res) => {
       date_of_vamana,
       prakriti,
       questions: [],
+      results: {
+        antiki_shuddhi: [],
+        vaigiki_shuddhi: [],
+        laingiki_shuddhi: [],
+        maniki_shuddhi: []},
     });
 
     await newPatient.save();
 
-    res.status(201).json({ message: 'Patient created successfully', executes: true, patient: newPatient });
+    res.status(201).json({ message: 'Patient created successfully', executed: true, patient: newPatient });
   } catch (error) {
-    res.status(500).json({ message: error.message, executes: false });
+    console.log(error);
+    res.status(500).json({ message: error.message, executed: false });
   }
 };
 
@@ -31,9 +41,9 @@ const createPatient = async (req, res) => {
 const getAllPatients = async (req, res) => {
   try {
     const patients = await Patient.find();
-    res.status(200).json({ executes: true, patients });
+    res.status(200).json({ executed: true, patients , message : "Patients fetched successfully"});
   } catch (error) {
-    res.status(500).json({ message: error.message, executes: false });
+    res.status(500).json({ message: error.message, executed: false });
   }
 };
 
@@ -44,12 +54,12 @@ const getPatientByUHID = async (req, res) => {
     const patient = await Patient.findOne({ uhid });
 
     if (!patient) {
-      return res.status(404).json({ message: 'Patient not found', executes: false });
+      return res.status(404).json({ message: 'Patient not found', executed: false });
     }
 
-    res.status(200).json({ executes: true, patient });
+    res.status(200).json({ executed: true, patient });
   } catch (error) {
-    res.status(500).json({ message: error.message, executes: false });
+    res.status(500).json({ message: error.message, executed: false });
   }
 };
 
@@ -62,12 +72,12 @@ const updatePatientDetailsByUHID = async (req, res) => {
     const updatedPatient = await Patient.findOneAndUpdate({ uhid }, updates, { new: true });
 
     if (!updatedPatient) {
-      return res.status(404).json({ message: 'Patient not found', executes: false });
+      return res.status(404).json({ message: 'Patient not found', executed: false });
     }
 
-    res.status(200).json({ message: 'Patient details updated successfully', executes: true, patient: updatedPatient });
+    res.status(200).json({ message: 'Patient details updated successfully', executed: true, patient: updatedPatient });
   } catch (error) {
-    res.status(500).json({ message: error.message, executes: false });
+    res.status(500).json({ message: error.message, executed: false });
   }
 };
 
@@ -75,18 +85,17 @@ const updatePatientDetailsByUHID = async (req, res) => {
 const updatePatientQuestionsByUHID = async (req, res) => {
   try {
     const { uhid } = req.params;
-    const { userID, questions } = req.body;
+    const {questions } = req.body;
 
     const patient = await Patient.findOne({ uhid });
 
     if (!patient) {
-      return res.status(404).json({ message: 'Patient not found', executes: false });
+      return res.status(404).json({ message: 'Patient not found', executed: false });
     }
 
-    questions.forEach((categoryBlock) => {
-      const { category, questions: categoryQuestions } = categoryBlock;
 
-      categoryQuestions.forEach((newQuestion) => {
+
+      questions.forEach((newQuestion) => {
         const existingQuestionIndex = patient.questions.findIndex((q) => q.question_uid === newQuestion.question_uid);
 
         if (existingQuestionIndex !== -1) {
@@ -102,13 +111,13 @@ const updatePatientQuestionsByUHID = async (req, res) => {
           });
         }
       });
-    });
+    
 
     await patient.save();
 
-    res.status(200).json({ message: 'Questions updated successfully', executes: true, questions: patient.questions });
+    res.status(200).json({ message: 'Questions updated successfully', executed: true, questions: patient.questions });
   } catch (error) {
-    res.status(500).json({ message: error.message, executes: false });
+    res.status(500).json({ message: error.message, executed: false });
   }
 };
 
@@ -120,12 +129,12 @@ const deletePatient = async (req, res) => {
     const deletedPatient = await Patient.findOneAndDelete({ uhid });
 
     if (!deletedPatient) {
-      return res.status(404).json({ message: 'Patient not found', executes: false });
+      return res.status(404).json({ message: 'Patient not found', executed: false });
     }
 
-    res.status(200).json({ message: 'Patient deleted successfully', executes: true });
+    res.status(200).json({ message: 'Patient deleted successfully', executed: true });
   } catch (error) {
-    res.status(500).json({ message: error.message, executes: false });
+    res.status(500).json({ message: error.message, executed: false });
   }
 };
 
