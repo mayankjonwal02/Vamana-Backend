@@ -1,4 +1,6 @@
 const Patient = require('../Models/Patients');
+const moment = require('moment');
+
 
 // Create Patient with empty questions
 const createPatient = async (req, res) => {
@@ -10,16 +12,16 @@ const createPatient = async (req, res) => {
       return res.status(200).json({ message: 'UHID already exists', executed: false });
     }
     const newPatient = new Patient({
-      name,
-      uhid,
-      age,
-      occupation,
-      past_illness,
-      address,
-      medicine_history,
-      date_of_admission,
-      date_of_vamana,
-      prakriti,
+      name : name,
+      uhid : uhid,
+      age : age,
+      occupation : occupation,
+      past_illness : past_illness,
+      address : address,
+      medicine_history : medicine_history,
+      date_of_admission : moment(date_of_admission, 'DD/MM/YYYY').toDate(),
+      date_of_vamana : date_of_vamana ? moment(date_of_vamana, 'DD/MM/YYYY').toDate() : null,
+      prakriti : prakriti,
       questions: [],
       results: {
         antiki_shuddhi: [],
@@ -32,6 +34,7 @@ const createPatient = async (req, res) => {
 
     res.status(201).json({ message: 'Patient created successfully', executed: true, patient: newPatient });
   } catch (error) {
+    console.log(error);
     console.log(error);
     res.status(500).json({ message: error.message, executed: false });
   }
@@ -124,6 +127,7 @@ const updatePatientQuestionsByUHID = async (req, res) => {
 // Delete patient by UHID
 const deletePatient = async (req, res) => {
   try {
+
     const { uhid } = req.params;
 
     const deletedPatient = await Patient.findOneAndDelete({ uhid });
