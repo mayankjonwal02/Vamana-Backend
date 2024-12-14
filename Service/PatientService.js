@@ -35,7 +35,7 @@ const createPatient = async (req, res) => {
     res.status(201).json({ message: 'Patient created successfully', executed: true, patient: newPatient });
   } catch (error) {
     console.log(error);
-    console.log(error);
+    // console.log(error);
     res.status(500).json({ message: error.message, executed: false });
   }
 };
@@ -71,11 +71,12 @@ const updatePatientDetailsByUHID = async (req, res) => {
   try {
     const { uhid } = req.params;
     const updates = req.body;
+    // console.log(updates);
+    const updatedPatient = await Patient.findOneAndUpdate({ uhid }, updates.update, { new: true });
 
-    const updatedPatient = await Patient.findOneAndUpdate({ uhid }, updates, { new: true });
 
     if (!updatedPatient) {
-      return res.status(404).json({ message: 'Patient not found', executed: false });
+      return res.status(200).json({ message: 'Patient not found', executed: false });
     }
 
     res.status(200).json({ message: 'Patient details updated successfully', executed: true, patient: updatedPatient });
@@ -89,11 +90,10 @@ const updatePatientQuestionsByUHID = async (req, res) => {
   try {
     const { uhid } = req.params;
     const {questions } = req.body;
-
     const patient = await Patient.findOne({ uhid });
 
     if (!patient) {
-      return res.status(404).json({ message: 'Patient not found', executed: false });
+      return res.status(200).json({ message: 'Patient not found', executed: false });
     }
 
 
@@ -106,12 +106,7 @@ const updatePatientQuestionsByUHID = async (req, res) => {
           patient.questions[existingQuestionIndex].answers = newQuestion.answers;
         } else {
           // Add new question
-          patient.questions.push({
-            question_uid: newQuestion.question_uid,
-            question: newQuestion.question,
-            answers: newQuestion.answers,
-            category,
-          });
+          patient.questions = questions;
         }
       });
     
@@ -120,6 +115,7 @@ const updatePatientQuestionsByUHID = async (req, res) => {
 
     res.status(200).json({ message: 'Questions updated successfully', executed: true, questions: patient.questions });
   } catch (error) {
+    console.log(error);
     res.status(500).json({ message: error.message, executed: false });
   }
 };
