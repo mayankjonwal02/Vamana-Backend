@@ -32,7 +32,7 @@ const getAllQuestions = async (req, res) => {
 const createQuestionByCategoryUID = async (req, res) => {
   try {
     const { categoryUID } = req.params;
-    const { question, options } = req.body;
+    const { question,input_type, options } = req.body;
 
     const category = await Questions.findById(categoryUID);
 
@@ -40,7 +40,7 @@ const createQuestionByCategoryUID = async (req, res) => {
       return res.status(404).json({ message: 'Category not found', executed: false });
     }
 
-    category.questions.push({ question, options });
+    category.questions.push({ question, input_type, options });
     await category.save();
 
     res.status(200).json({ message: 'Question added successfully', executed: true, category });

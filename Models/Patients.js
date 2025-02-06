@@ -25,6 +25,11 @@ const patientSchema = new mongoose.Schema({
         question: { type: String, required: true },
         answers: [{ type: String, required: true }], // Array of strings
     }],
+    Analysis : [{
+        question_uid: { type: mongoose.Schema.Types.ObjectId, ref: 'AnalysisQuestion', required: true },
+        question: { type: String, required: true },
+        answers: [{ type: String, required: true }], // Array of strings
+    }],
     // result is a single entity
     results: ResultSchema
 

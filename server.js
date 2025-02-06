@@ -6,6 +6,7 @@ const cors = require('cors')
 const UserRouter = require('./Controller/UserController')
 const PatientRouter = require('./Controller/PatientController')
 const QuestionRouter = require('./Controller/QuestionController')
+const AnalysisRouter = require('./Controller/AnalysisController')
 
 const app = express()
 
@@ -22,6 +23,7 @@ app.get('/', (req, res) => {
 app.use('/api/user', UserRouter)
 app.use('/api/patient', PatientRouter)
 app.use('/api/questions', QuestionRouter)
+app.use('/api/analysis', AnalysisRouter)
 
 app.get("/api/test", (req, res) => {
     res.json({message : "Connection Successful" , executed : true});
