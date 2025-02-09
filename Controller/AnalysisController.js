@@ -4,7 +4,8 @@ const {
   createQuestion,
   getQuestions,
   updateQuestionByQuestionUID,
-  deleteQuestionByQuestionUID
+  deleteQuestionByQuestionUID,
+  getAnalysisStatistics
 } = require('../Service/AnalysisService');
 
 // Routes for Questions
@@ -20,5 +21,8 @@ router.put('/analysisQuestions/:questionUID', updateQuestionByQuestionUID);
 
 // Delete question by question UID
 router.delete('/analysisQuestions/:questionUID', deleteQuestionByQuestionUID);
+
+// Get analysis statistics
+router.get('/analysisStatistics', getAnalysisStatistics);
 
 module.exports = router;

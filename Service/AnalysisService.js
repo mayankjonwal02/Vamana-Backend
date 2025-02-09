@@ -1,7 +1,7 @@
 // Controllers/questionsController.js
 
 const AnalysisQuestions = require('../Models/Analysis');
-
+const Patient = require('../Models/Patients');
 
 
 
@@ -31,7 +31,7 @@ const getQuestions = async (req, res) => {
 
     const questions = await AnalysisQuestions.find({});
 
-    res.status(200).json({ executed: true, questions });
+    res.status(200).json({ executed: true, questions , message : "Questions fetched successfully"});
   } catch (error) {
     res.status(500).json({ message: error.message, executed: false });
   }
@@ -45,6 +45,7 @@ const updateQuestionByQuestionUID = async (req, res) => {
     const { questionUID } = req.params;
     const { question,input_type, options } = req.body;
 
+    // console.log(req.body);
     const old_question = await AnalysisQuestions.findById(questionUID);
 
     if (!old_question) {
@@ -56,8 +57,9 @@ const updateQuestionByQuestionUID = async (req, res) => {
     old_question.options = options;
     await old_question.save();
 
-    res.status(200).json({ message: 'Question updated successfully', executed: true, category });
+    res.status(200).json({ message: 'Question updated successfully', executed: true });
   } catch (error) {
+    // console.log(error);
     res.status(500).json({ message: error.message, executed: false });
   }
 };
@@ -75,18 +77,80 @@ const deleteQuestionByQuestionUID = async (req, res) => {
       return res.status(404).json({ message: 'question not found', executed: false });
     }
 
-    await old_question.remove();
+    await AnalysisQuestions.deleteOne({ _id: questionUID });
 
-    res.status(200).json({ message: 'Question deleted successfully', executed: true, category });
+    res.status(200).json({ message: 'Question deleted successfully', executed: true });
   } catch (error) {
+    // console.log(error);
     res.status(500).json({ message: error.message, executed: false });
   }
 };
+
+
+const getAnalysisStatistics = async function(req, res) {
+  try {
+      // Step 1: Fetch Analysis Questions with valid input_type
+      const validInputTypes = ["radio", "checkbox", "dropdown"];
+      const analysisQuestions = await AnalysisQuestions.find({ input_type: { $in: validInputTypes } });
+
+      // Step 2: Count total number of patients
+      const totalPatients = await Patient.countDocuments();
+
+      // Step 3: Aggregate patient responses for analysis questions
+      const analysisStats = await Patient.aggregate([
+          { $unwind: "$Analysis" },  // Flatten the Analysis array
+          {
+              $match: {
+                  "Analysis.question_uid": { $in: analysisQuestions.map(q => q._id) } // Filter by valid questions
+              }
+          },
+          {
+              $group: {
+                  _id: { question_uid: "$Analysis.question_uid", answer: "$Analysis.answers" },
+                  count: { $sum: 1 }
+              }
+          }
+      ]);
+
+      // Step 4: Format the response
+      const questions = analysisQuestions.map(question => {
+          const optionsCount = {};
+
+          // Initialize all options to 0%
+          question.options.forEach(option => {
+              optionsCount[option] = 0;
+          });
+
+          // Update the count from analysisStats
+          analysisStats.forEach(stat => {
+              if (stat._id.question_uid.toString() === question._id.toString()) {
+                  stat._id.answer.forEach(answer => {
+                      if (optionsCount.hasOwnProperty(answer)) {
+                          optionsCount[answer] = ((stat.count / totalPatients) * 100).toFixed(2);
+                      }
+                  });
+              }
+          });
+
+
+
+          return {
+              question: question.question,
+              options: Object.entries(optionsCount).map(([option, value]) => ({ option, value: `${value}%` }))
+          };
+      });
+
+      res.status(200).json({ executed: true, questions, message: "Analysis statistics fetched successfully" });
+  } catch (error) {
+      console.error("Error fetching analysis statistics:", error);
+      throw error;
+  }
+}
 
 module.exports = {
   createQuestion,
   getQuestions,
   updateQuestionByQuestionUID,
   deleteQuestionByQuestionUID,
-  
+  getAnalysisStatistics
 };

@@ -90,7 +90,7 @@ const updateCategoryByUID = async (req, res) => {
 const updateQuestionByCategoryUIDAndQuestionUID = async (req, res) => {
   try {
     const { categoryUID, questionUID } = req.params;
-    const { question, options } = req.body;
+    const { question, options,input_type } = req.body;
 
     const category = await Questions.findById(categoryUID);
 
@@ -104,7 +104,10 @@ const updateQuestionByCategoryUIDAndQuestionUID = async (req, res) => {
       return res.status(404).json({ message: 'Question not found', executed: false });
     }
 
-    category.questions[questionIndex] = { question, options };
+
+    category.questions[questionIndex].question = question;
+    category.questions[questionIndex].options = options;
+    category.questions[questionIndex].input_type = input_type;
     await category.save();
 
     res.status(200).json({ message: 'Question updated successfully', executed: true, category });

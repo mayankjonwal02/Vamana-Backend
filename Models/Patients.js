@@ -30,6 +30,10 @@ const patientSchema = new mongoose.Schema({
         question: { type: String, required: true },
         answers: [{ type: String, required: true }], // Array of strings
     }],
+    SnehaPana : [{
+        day : { type: Number, required: true },
+        dose : {type: Number, required: true},
+    }],
     // result is a single entity
     results: ResultSchema
 

@@ -23,6 +23,7 @@ const createPatient = async (req, res) => {
       date_of_vamana : date_of_vamana ? moment(date_of_vamana, 'DD/MM/YYYY').toDate() : null,
       prakriti : prakriti,
       questions: [],
+      Analysis : [],
       results: {
         antiki_shuddhi: [],
         vaigiki_shuddhi: [],
@@ -71,7 +72,7 @@ const updatePatientDetailsByUHID = async (req, res) => {
   try {
     const { uhid } = req.params;
     const updates = req.body;
-    // console.log(updates);
+    // console.log(updates.questions[0].answers);
     const updatedPatient = await Patient.findOneAndUpdate({ uhid }, updates.update, { new: true });
 
 
@@ -90,6 +91,7 @@ const updatePatientQuestionsByUHID = async (req, res) => {
   try {
     const { uhid } = req.params;
     const {questions } = req.body;
+    console.log(questions);
     const patient = await Patient.findOne({ uhid });
 
     if (!patient) {
@@ -101,7 +103,7 @@ const updatePatientQuestionsByUHID = async (req, res) => {
       questions.forEach((newQuestion) => {
         const existingQuestionIndex = patient.questions.findIndex((q) => q.question_uid === newQuestion.question_uid);
 
-        if (existingQuestionIndex !== -1) {
+        if (existingQuestionIndex !== -1) { 
           // Update existing question answers
           patient.questions[existingQuestionIndex].answers = newQuestion.answers;
         } else {
