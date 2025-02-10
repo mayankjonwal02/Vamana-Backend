@@ -33,6 +33,7 @@ const patientSchema = new mongoose.Schema({
     SnehaPana : [{
         day : { type: Number, required: true },
         dose : {type: Number, required: true},
+        digestivehours : {type: Number, required: true},
     }],
     // result is a single entity
     results: ResultSchema

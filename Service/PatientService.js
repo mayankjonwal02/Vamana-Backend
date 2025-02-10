@@ -73,6 +73,7 @@ const updatePatientDetailsByUHID = async (req, res) => {
     const { uhid } = req.params;
     const updates = req.body;
     // console.log(updates.questions[0].answers);
+    console.log(updates);
     const updatedPatient = await Patient.findOneAndUpdate({ uhid }, updates.update, { new: true });
 
 
