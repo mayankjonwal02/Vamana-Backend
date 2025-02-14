@@ -3,11 +3,12 @@ const User = require('../Models/Users');
 // Create a new user
 const createUser = async (req, res) => {
   try {
-    let { userID, contact, password, role, powers } = req.body;
+    let { userID, contact, password, role, powers ,instituteID } = req.body;
     userID = userID.trim()
     contact = contact.trim()
     password = password.trim()
     role = role.trim()
+    instituteID = instituteID.trim()
     
 
     const existingUser = await User.findOne({ userID });
@@ -20,6 +21,7 @@ const createUser = async (req, res) => {
       password,
       role,
       powers,
+      instituteID
     });
 
     const savedUser = await user.save();
@@ -51,7 +53,7 @@ const signinUser = async (req, res) => {
       const isMatch = (password === user.password);
       const roleMatch = (role === user.role);
       if (isMatch && roleMatch) {
-        res.status(200).json({ message: 'Sign-in successful' , executed : true});
+        res.status(200).json({ message: 'Sign-in successful' , executed : true , user : user});
       } else {
         console.log(role);
         res.status(401).json({ message: 'Invalid credentials' , executed : false});
@@ -97,17 +99,18 @@ const updateUser = async (req, res) => {
     try {
         let userID = req.params.id;
 
-      let { contact, password, role, powers } = req.body;
-
+      let { contact, password, role, powers ,instituteID } = req.body;
+      console.log(req.body);
       userID = userID.trim();
       contact = contact.trim();
       password = password.trim();
       role = role.trim();
+      instituteID = instituteID.trim();
  
   
       const updatedUser = await User.findOneAndUpdate(
         { userID },
-        { contact, password, role, powers },
+        { contact, password, role, powers ,instituteID },
         { new: true }
       )
   

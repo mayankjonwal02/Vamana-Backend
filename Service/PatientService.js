@@ -1,11 +1,13 @@
 const Patient = require('../Models/Patients');
 const moment = require('moment');
-
+const multer = require('multer');
+const { GridFsStorage } = require('multer-gridfs-storage');
+const Grid = require('gridfs-stream');
 
 // Create Patient with empty questions
 const createPatient = async (req, res) => {
   try {
-    const { name, uhid, age, occupation, past_illness, address, medicine_history, date_of_admission, date_of_vamana, prakriti } = req.body;
+    const { name, uhid, age, occupation, past_illness, address, medicine_history, date_of_admission, date_of_vamana, prakriti ,instituteID } = req.body;
 
     const existingPatient = await Patient.findOne({ uhid });
     if (existingPatient) {
@@ -22,6 +24,7 @@ const createPatient = async (req, res) => {
       date_of_admission : moment(date_of_admission, 'DD/MM/YYYY').toDate(),
       date_of_vamana : date_of_vamana ? moment(date_of_vamana, 'DD/MM/YYYY').toDate() : null,
       prakriti : prakriti,
+      instituteID : instituteID,
       questions: [],
       Analysis : [],
       results: {
@@ -66,6 +69,21 @@ const getPatientByUHID = async (req, res) => {
     res.status(500).json({ message: error.message, executed: false });
   }
 };
+
+const getPatientsByInstituteID = async (req, res) => {
+  try {
+    const { instituteID } = req.params;
+    const patients = await Patient.find({ instituteID });
+
+    if (!patients) {
+      return res.status(200).json({ message: 'Patients not found', executed: false });
+    }
+
+    res.status(200).json({ executed: true, patients , message : "Patients fetched successfully"});
+  } catch (error) {
+    res.status(200).json({ message: "Error While Fetching Patients", executed: false });
+  }
+}
 
 // Update patient details by UHID
 const updatePatientDetailsByUHID = async (req, res) => {
@@ -148,4 +166,5 @@ module.exports = {
   updatePatientDetailsByUHID,
   updatePatientQuestionsByUHID,
   deletePatient,
+  getPatientsByInstituteID
 };

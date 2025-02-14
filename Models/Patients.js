@@ -19,7 +19,13 @@ const patientSchema = new mongoose.Schema({
     medicine_history: { type: String },
     date_of_admission: { type: Date, required: true },
     date_of_vamana: { type: Date },
+    instituteID : { type: String },
     prakriti: { type: String },
+    InvestigationReport : {     
+        filename: String,
+        fileType: String,
+        fileData: String, // Base64-encoded PDF
+        },
     questions: [{
         question_uid: { type: mongoose.Schema.Types.ObjectId, ref: 'Question', required: true },
         question: { type: String, required: true },

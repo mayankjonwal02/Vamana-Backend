@@ -1,4 +1,5 @@
 const express = require('express')
+const bodyParser = require("body-parser");
 const dotenv = require('dotenv').config()
 const { connectDB } = require('./Repository/Connect_MongoDB')
 const cors = require('cors')
@@ -9,7 +10,9 @@ const QuestionRouter = require('./Controller/QuestionController')
 const AnalysisRouter = require('./Controller/AnalysisController')
 
 const app = express()
-
+// Increase the request size limit
+app.use(bodyParser.json({ limit: "50mb" })); // Adjust as needed
+app.use(bodyParser.urlencoded({ limit: "50mb", extended: true }));
 app.use(express.json())
 app.use(cors())
 const port = process.env.PORT || 3000
