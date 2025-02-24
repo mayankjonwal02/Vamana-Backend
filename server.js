@@ -1,4 +1,5 @@
 const express = require('express')
+const path = require('path');
 const bodyParser = require("body-parser");
 const dotenv = require('dotenv').config()
 const { connectDB } = require('./Repository/Connect_MongoDB')
@@ -22,6 +23,11 @@ connectDB()
 app.get('/', (req, res) => {
   res.send('This is Vamana Backend! ')
 })
+
+app.get('/privacy-policy', (req, res) => {
+  res.sendFile(path.join(__dirname, 'static/privacy.html'));
+});
+
 
 app.use('/api/user', UserRouter)
 app.use('/api/patient', PatientRouter)

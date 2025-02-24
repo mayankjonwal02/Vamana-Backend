@@ -85,6 +85,8 @@ const getPatientsByInstituteID = async (req, res) => {
   }
 }
 
+
+
 // Update patient details by UHID
 const updatePatientDetailsByUHID = async (req, res) => {
   try {
