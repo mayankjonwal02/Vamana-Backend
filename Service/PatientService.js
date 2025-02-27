@@ -8,7 +8,7 @@ const Grid = require('gridfs-stream');
 const createPatient = async (req, res) => {
   try {
     const { name, uhid, age, occupation, past_illness, address, medicine_history, date_of_admission, date_of_vamana, prakriti ,instituteID } = req.body;
-
+    console.log(req.body);
     const existingPatient = await Patient.findOne({ uhid });
     if (existingPatient) {
       return res.status(200).json({ message: 'UHID already exists', executed: false });

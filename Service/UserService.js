@@ -36,7 +36,7 @@ const createUser = async (req, res) => {
 const signinUser = async (req, res) => {
     try {
       let { userID, password ,role } = req.body;
-
+      console.log(req.body);
       userID = userID.trim();
       password = password.trim();
       role = role.trim();

@@ -22,9 +22,9 @@ const patientSchema = new mongoose.Schema({
     instituteID : { type: String },
     prakriti: { type: String },
     InvestigationReport : {     
-        filename: { type: String, required: true },
-        fileType: { type: String, required: true },
-        fileData: { type: String, required: true }, // Base64-encoded PDF
+        filename: { type: String},
+        fileType: { type: String },
+        fileData: { type: String }, // Base64-encoded PDF
         },
     questions: [{
         question_uid: { type: mongoose.Schema.Types.ObjectId, ref: 'Question', required: true },
