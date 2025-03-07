@@ -7,6 +7,7 @@ const {
   updatePatientDetailsByUHID,
   updatePatientQuestionsByUHID,
   deletePatient,
+  exportPatientsByInstituteID
 } = require('../Service/PatientService');
 
 const router = express.Router();
@@ -19,5 +20,6 @@ router.get('/patients/institute/:instituteID', getPatientsByInstituteID);
 router.put('/patients/:uhid', updatePatientDetailsByUHID);
 router.put('/patients/:uhid/questions', updatePatientQuestionsByUHID);
 router.delete('/patients/:uhid', deletePatient);
+router.get('/patients/questiondata/:instituteID', exportPatientsByInstituteID);
 
 module.exports = router;

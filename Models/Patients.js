@@ -29,7 +29,7 @@ const patientSchema = new mongoose.Schema({
     questions: [{
         question_uid: { type: mongoose.Schema.Types.ObjectId, ref: 'Question', required: true },
         question: { type: String, required: true },
-        answers: [{ type: String, required: true }], // Array of strings
+        answers: [{ type: String }], // Array of strings
     }],
     Analysis : [{
         question_uid: { type: mongoose.Schema.Types.ObjectId, ref: 'AnalysisQuestion', required: true },
