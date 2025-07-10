@@ -119,6 +119,12 @@ Collaborating with AIIA, New Delhi
 
 [LinkedIn](https://www.linkedin.com/in/mayankjonwal) • [GitHub](https://github.com/<your-username>)
 
+**Sachin Singh**
+M.Tech CSE, IIT Jodhpur
+Collaborating with AIIA, New Delhi
+
+[LinkedIn](https://www.linkedin.com/in/sachinsingh2156) • [GitHub](https://github.com/sachinsingh2156)
+
 ---
 
 ## 📄 License
